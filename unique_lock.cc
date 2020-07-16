@@ -24,7 +24,15 @@ void work1(int& s)
 {
     for (int i=1;i<=5000;i++)
     {
-        std::unique_lock<std::mutex> munique(mlock,std::try_to_lock);
+        std::unique_lock<std::mutex> munique(mlock,std::try_to_lock);//效率会比lock_guard低一些
+        //std::adopt_lock表示互斥量已经被lock，不需要再重复lock,该互斥量必须已经lock才能使用该参数
+        //std::try_to_lock可以避免一些不必要的等待，会判断当前mutex能否被lock,如果不能被lock，可以先去
+        //执行其他代码。这个和adopt不同，不需要自己提前加锁。
+        //std::defer_lock这个参数表示暂时先不lock，之后在手动lock,但是使用之前也是不允许lock的，当使用了
+        //defer_lock参数时，在创建了unique_lock的对象时就不会自动加锁，那么就需要借助lock这个成员函数来
+        //进行手动加锁，当然也有unlock来手动解锁。这个和mutex的lock和unlock使用方法一样。
+        //release函数，解除unique_lock和mutex对象的联系，并将原mutex对象的指针返回出来。如果之前的
+        //mutex已经加锁，需在后面自动unlock解锁。
         if (munique.owns_lock()==true){
             s+=i;
         }
@@ -45,6 +53,8 @@ void work2(int& s)
         }
     }
 }
+std::unique_lock<std::mutex> munique1(mlock);
+std::unique_lock<std::mutex> munique2(std::move(munique1));
 int main()
 {
     int ans=0;
