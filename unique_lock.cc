@@ -20,6 +20,18 @@ class X
             swap(lhs.some_detail,rhs.some_detail);
         }
 };
+std::unique_lock<std::mutex> get_lock()
+{
+    extern std::mutex some_mutex;
+    std::unique_lock<std::mutex> lk(some_mutex);
+    prepare_data();
+    retur lk;
+}
+void process_data()
+{
+    std::unique_lock<std::mutex> lk(get_lock());
+    do_something();
+}
 void work1(int& s)
 {
     for (int i=1;i<=5000;i++)
@@ -65,3 +77,33 @@ int main()
     std::cout << ans << std::endl;
     return 0;
 }
+//std::unique_lock的对象时可移动的
+void get_and_process_data()
+{
+    std::unique_lock<std::mutex> my_lock(the_mutex);
+    some_class data_to_process = get_next_data_chunk();
+    my_lock.lock();
+    write_result(data_to_process,result);
+}
+class Y
+{
+    private:
+        int some_detail;
+        mutable std::mutex m;
+
+        int get_detail const
+        {
+            std::lock_guard<std::mutex> lock_a(m);
+            return some_detail;
+        }
+    public:
+        Y(int sd):some_detail(sd){}
+        friend bool operator==(Y const& lhs,Y const& rhs)
+        {
+            if(&lhs==&rhs)
+                return true;
+            int const lhs_value = lhs.get_detail();
+            int const rhs_value = rhs.get_detail();
+            return lhs_value==rhs_value;
+        }
+};
