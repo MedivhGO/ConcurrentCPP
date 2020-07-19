@@ -23,7 +23,7 @@ void data_processing_thread()
         std::unique_lock<std::mutex> lk(mut); //锁定共享队列
         data_cond.wait(
             lk,[]{return !data_queue.empty();}
-        ); // wait条件如果为false就会阻塞,true会解除阻塞 因为阻塞时需要解锁互斥量,所以使用unique_lock
+        ); // wait条件如果为false就会阻塞,true会解除阻塞 因为阻塞时需要解锁互斥量,所以使用unique_lock(提供更多的灵活性)
         data_queue.pop();
         lk.unlock();
         process(data);

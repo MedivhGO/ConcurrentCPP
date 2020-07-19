@@ -9,4 +9,3 @@ int main()
     do_other_stuff();
     std::cout << "The answer is " << the_answer.get() << std::endl;
 }
-
