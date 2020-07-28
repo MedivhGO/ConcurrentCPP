@@ -29,3 +29,5 @@ class move_only
         void operator()();
 };
 auto f5 = std::async(move_only());
+//可以在async中第一个参数传入std::launch::async来立刻执行该异步任务
+//或者传入std::launch::deferred当结果被需要时执行该异步任务
