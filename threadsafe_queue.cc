@@ -1,9 +1,8 @@
 #include <memory>
 
-template<typename T>
-class threadsafe_queue
-{
-public:
+template <typename T>
+class threadsafe_queue {
+  public:
     threadsafe_queue();
     threadsafe_queue(threadsafe_queue &&) = default;
     threadsafe_queue(const threadsafe_queue &) = default;
@@ -12,22 +11,17 @@ public:
     ~threadsafe_queue();
 
     void push(T new_value);
-    bool try_pop(T& value);
+    bool try_pop(T &value);
     std::shared_ptr<T> tyr_pop();
 
-    void wait_and_pop(T& value);
+    void wait_and_pop(T &value);
     std::shared_ptr<T> wait_and_pop();
 
     bool empty() const;
 
-private:
-
+  private:
 };
 
-threadsafe_queue::threadsafe_queue()
-{
-}
+threadsafe_queue::threadsafe_queue() {}
 
-threadsafe_queue::~threadsafe_queue()
-{
-}
+threadsafe_queue::~threadsafe_queue() {}

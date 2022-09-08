@@ -1,32 +1,26 @@
 class Foo {
-public:
+  public:
     Foo() {
-        
+        m1.lock();
+        m2.lock();
     }
     void first(function<void()> printFirst) {
-        std::unique_lock<std::mutex> lk(g_mutex);
         // printFirst() outputs "first". Do not change or remove this line.
         printFirst();
-        counter++;
-        cv1.notify_one();
+        m1.unlock();
     }
     void second(function<void()> printSecond) {
-        std::unique_lock<std::mutex> lk(g_mutex);
-        cv1.wait(lk,[this](){return counter==2;})
+        m1.lock();
         // printSecond() outputs "second". Do not change or remove this line.
         printSecond();
-        counter++;
-        cv2.notify_one();
+        m2.unlock();
     }
     void third(function<void()> printThird) {
-        std::unique_lock<std::mutex> lk(g_mutex);
-        cv2.wait(lk,[this](){return counter==3;})
+        m2.lock();
         // printThird() outputs "third". Do not change or remove this line.
         printThird();
     }
-private:
-    int counter=1;
-    std::condition_variable cv1;
-    std::condition_variable cv2;
-    std::mutex g_mutex;
+
+  private:
+    std::mutex m1, m2;
 };

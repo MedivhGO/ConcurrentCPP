@@ -1,1 +1,1 @@
-学习C++11并发编程（《C++ Concurrency In Action 》）
+学习 C++11 并发编程《 C++ Concurrency In Action 》
